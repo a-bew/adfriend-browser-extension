@@ -1,0 +1,150 @@
+.container {
+  width: 100%;
+  min-width: 200px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.widget {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+}
+
+.widgetGratitude {
+  background-color: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+
+.widgetSuccess {
+  background-color: #ecfdf5;
+  border: 1px solid #6ee7b7;
+}
+
+.widgetPersonal {
+  background-color: #eff6ff;
+  border: 1px solid #93c5fd;
+}
+
+.widgetDefault {
+  background-color: #faf5ff;
+  border: 1px solid #d8b4fe;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.titleGratitude {
+  color: #b45309;
+}
+
+.titleSuccess {
+  color: #047857;
+}
+
+.titlePersonal {
+  color: #1d4ed8;
+}
+
+.titleDefault {
+  color: #7e22ce;
+}
+
+.quote {
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.quoteGratitude {
+  color: #92400e;
+}
+
+.quoteSuccess {
+  color: #065f46;
+}
+
+.quotePersonal {
+  color: #1e40af;
+}
+
+.quoteDefault {
+  color: #6b21a8;
+}
+
+.refreshButton {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.refreshButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+.animating {
+  transform: scale(0.95);
+  opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 300px) {
+  .container {
+    padding: 0.5rem;
+  }
+  
+  .widget {
+    padding: 0.75rem;
+  }
+  
+  .quote {
+    font-size: 0.75rem;
+  }
+  
+  .title {
+    font-size: 0.875rem;
+  }
+}
