@@ -67,16 +67,23 @@ export const motivationFunction = async (request: any, _: any, sendResponse: any
                 
                         // Update chrome.storage.local for immediate access by other parts of the extension
                         chrome.storage.local.set({ preferences: state.preferences }, () => {
-                            console.log("Preferences updated in local storage:", state.preferences);
                             
                             // Notify content script if widget type changed
                             sendRequest("GET_MOTIVATIONAL_QUOTES", { quoteKey: request.widgetType });
                             
                             setTimeout(() => {
-                                console.log("request.widgetType", request.widgetType);
-                                chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-                                    chrome.tabs.sendMessage(tabs[0].id!, { action: "WIDGET_TYPE_CHANGE", widgetType: request.widgetType });
-                                });
+
+                                // Notify content script if widget type or extension enabled/disabled changed
+                                if (request.widgetType !== state.preferences.widgetType || request.enableQuotes !== state.preferences.enableQuotes) {
+                                    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                                        chrome.tabs.sendMessage(tabs[0].id!, { 
+                                            action: "WIDGET_TYPE_CHANGE", 
+                                            widgetType: request.widgetType, 
+                                            isEnabled: request.enableQuotes 
+                                        });
+                                    });
+                                }
+
                             }, 100);
                 
                             // Send a success response back

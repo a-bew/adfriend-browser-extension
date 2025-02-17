@@ -359,3 +359,4 @@ export const App = React.memo(() => {
 
 // Start observing ads when the script runs
 observeAds();
+

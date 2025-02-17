@@ -1,16 +1,16 @@
-import  { useState, useEffect  } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Home.module.scss";
 import { sendRequest } from "@/utils";
+import ReminderManager, { Reminder } from "@/components/Home/ReminderForm/ReminderManager";
 
 const Home = () => {
   const [widgetType, setWidgetType] = useState<string>("Personal Life");
   const [refreshInterval, setRefreshInterval] = useState<number>(300);
   const [theme, setTheme] = useState<string>("light");
-  // const [stats, setStats] = useState<{ replacedAds: number } | null>(null);
   const [saved, setSaved] = useState<boolean>(false);
   const [enableQuotes, setEnableQuotes] = useState(true);
-  const [motivationQuoteTypes, setMotivationQuoteTypes] = useState<string[]>(["success"]);
-  // const saveButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [widgetTypes, setWidgetTypeTypes] = useState<string[]>(["success"]);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
 
   const handleSavePreference = () => {
     chrome.runtime.sendMessage(
@@ -20,40 +20,36 @@ const Home = () => {
         theme,
         widgetType,
         refreshInterval,
+        reminders, // Save all reminders
       },
       (response) => {
         if (response && response.success) {
-            sendRequest("SAVE_PREFERENCES", { saved: true });
-            setSaved(true);
-            // showSaveConfirmation();
+          sendRequest("SAVE_PREFERENCES", { saved: true });
+          setSaved(true);
 
-            // Close the window after a short delay
-            setTimeout(() => {
-                sendRequest("SAVE_PREFERENCES", { saved: false });
-                setSaved(false);
-                window.close(); // Close the popup after saving preferences
-            }, 2000);
-
+          setTimeout(() => {
+            sendRequest("SAVE_PREFERENCES", { saved: false });
+            setSaved(false);
+            window.close();
+          }, 2000);
         }
-    }
-   
+      }
     );
   };
 
-  // UI feedback
-  // const showSaveConfirmation = () => {
-  //   if (saveButtonRef.current) {
-  //     saveButtonRef.current.textContent = 'Saved!';
-  //     saveButtonRef.current.classList.add('success');
+  const handleAddReminder = (newReminder: Reminder) => {
+    const updatedReminders = [...reminders, newReminder];
+    setReminders(updatedReminders);
+    // Optionally auto-save when a reminder is added
+    // handleSavePreference();
+  };
 
-  //     setTimeout(() => {
-  //       if (saveButtonRef.current) {
-  //         saveButtonRef.current.textContent = 'Save Settings';
-  //         saveButtonRef.current.classList.remove('success');
-  //       }
-  //     }, 2000);
-  //   }
-  // };
+  const handleDeleteReminder = (reminderId: number) => {
+    const updatedReminders = reminders.filter(reminder => reminder.id !== reminderId);
+    setReminders(updatedReminders);
+    // Optionally auto-save when a reminder is deleted
+    // handleSavePreference();
+  };
 
   // Load preferences from storage
   useEffect(() => {
@@ -63,13 +59,13 @@ const Home = () => {
         setTheme(response.preferences.theme);
         setWidgetType(response?.preferences?.widgetType);
         setRefreshInterval(response.preferences.refreshInterval || 300);
+        setReminders(response.preferences.reminders || []);
       }
       if (response?.quoteKeys) {
-        setMotivationQuoteTypes(response.quoteKeys);
+        setWidgetTypeTypes([...response.quoteKeys, "reminder"]);
       }
     });
 
-    // Get saved state
     chrome.runtime.sendMessage({ type: "GET_SAVED" }, (response) => {
       setSaved(response?.saved || false);
     });
@@ -94,8 +90,8 @@ const Home = () => {
       {/* Widget Selection */}
       <div className={styles.section}>
         <h2>Choose Widget:</h2>
-        {motivationQuoteTypes.length > 0 ? (
-          motivationQuoteTypes.map((type) => (
+        {widgetTypes.length > 0 ? (
+          widgetTypes.map((type) => (
             <label key={type} className={styles.radioLabel}>
               <input
                 type="radio"
@@ -104,7 +100,7 @@ const Home = () => {
                 checked={widgetType?.toLocaleLowerCase() === type?.toLocaleLowerCase()}
                 onChange={(e) => setWidgetType(e.target.value)}
               />
-              {type.replace(/^\w/, (c) => c.toUpperCase())} {/* Capitalize */}
+              {type.replace(/^\w/, (c) => c.toUpperCase())}
             </label>
           ))
         ) : (
@@ -112,7 +108,18 @@ const Home = () => {
         )}
       </div>
 
-      {/* Refresh Interval */}
+      {/* Show Reminder Manager when reminder type is selected */}
+      {widgetType?.toLowerCase() === 'reminder' && (
+        <ReminderManager
+          reminders={reminders}
+          onAddReminder={handleAddReminder}
+          onDeleteReminder={handleDeleteReminder}
+        />
+      )}
+
+      
+
+      {/* Rest of your component remains the same */}
       <div className={styles.section}>
         <h2>Refresh Interval</h2>
         <select value={refreshInterval} onChange={(e) => setRefreshInterval(Number(e.target.value))}>
@@ -123,7 +130,6 @@ const Home = () => {
         </select>
       </div>
 
-      {/* Theme Selection */}
       <div className={styles.section}>
         <h2>Theme</h2>
         <select value={theme} onChange={(e) => setTheme(e.target.value)}>
@@ -133,25 +139,21 @@ const Home = () => {
         </select>
       </div>
 
-      {/* Show Quotes */}
-      <label>
+      {/* <label>
         <input
           type="checkbox"
           checked={enableQuotes}
           onChange={(e) => setEnableQuotes(e.target.checked)}
         />
-        {enableQuotes ? `Disable AdFriend Extension`:`Enable AdFriend Extension`}
-      </label>
+        {`Enable AdFriend Extension`}
+      </label> */}
 
-      {/* Save Button */}
       <button
-        // ref={saveButtonRef}
         className={styles.saveButton}
         onClick={handleSavePreference}
       >
         {saved ? "Saved!" : "Save"}
       </button>
-
     </div>
   );
 };
