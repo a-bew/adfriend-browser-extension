@@ -35,7 +35,7 @@ const ReminderManager: React.FC<ReminderManagerProps> = ({
                 onClick={() => setIsModalOpen(true)}
                 className={styles.addButton}
             >
-                Add Reminder
+             Add Reminders
             </button>
 
             <button
