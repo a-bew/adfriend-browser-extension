@@ -3,7 +3,7 @@ import { state } from "@/store/state";
 import { sendRequest } from "@/utils";
 import { decryptPreferences, encryptPreferences } from "../background";
 
-export const motivationFunction = async (request: any, _: any, sendResponse: any) => {
+export const preferenceFunction = async (request: any, _: any, sendResponse: any) => {
     try {
         switch (request.action) {
             case "GET_MOTIVATIONAL_QUOTES_KEYS":
@@ -51,6 +51,7 @@ export const motivationFunction = async (request: any, _: any, sendResponse: any
                             theme: request.theme,
                             widgetType: request.widgetType,
                             refreshInterval: request.refreshInterval,
+                            reminders: request.reminders
                         }); // Use a secure method for password in production
                 
                         await secureIndexedDBStorage.storeData('preferences', encryptedData);
@@ -78,8 +79,7 @@ export const motivationFunction = async (request: any, _: any, sendResponse: any
                                     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
                                         chrome.tabs.sendMessage(tabs[0].id!, { 
                                             action: "WIDGET_TYPE_CHANGE", 
-                                            widgetType: request.widgetType, 
-                                            isEnabled: request.enableQuotes 
+                                            widgetType: request.widgetType,  
                                         });
                                     });
                                 }

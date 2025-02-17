@@ -10,11 +10,12 @@ export type Action = `${Actions}`;
 
 export type QUOTETYPE = any;//Record<string, { quote: string; author: string; }[] | string>;
 
-export const defaultPreferences = {
+export const defaultPreferences:any = {
   enableQuotes: true,
   theme: "light",
   widgetType: "Personal Life",
   refreshInterval: 300,
+  reminders: []
 };
 
 export const state = proxy({
