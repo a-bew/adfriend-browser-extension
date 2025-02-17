@@ -41,14 +41,14 @@ const Home = () => {
     const updatedReminders = [...reminders, newReminder];
     setReminders(updatedReminders);
     // Optionally auto-save when a reminder is added
-    // handleSavePreference();
+    handleSavePreference();
   };
 
   const handleDeleteReminder = (reminderId: number) => {
     const updatedReminders = reminders.filter(reminder => reminder.id !== reminderId);
     setReminders(updatedReminders);
     // Optionally auto-save when a reminder is deleted
-    // handleSavePreference();
+    handleSavePreference();
   };
 
   // Load preferences from storage

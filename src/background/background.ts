@@ -1,7 +1,6 @@
 import { defaultPreferences, state } from "@/store/state";
 import { loadQuotes } from "./utils";
-import { preferenceFunction } from "./functions/preference";
-import { motivationFunction } from "./functions/motivation";
+import { preferenceFunction } from "./functions/motivation";
 import { EncryptedData, secureIndexedDBStorage } from "@/db/SecureIndexDb";
 
 
@@ -86,17 +85,13 @@ chrome.runtime.onInstalled.addListener(async () => {
 // Listen for messages
 chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   switch (request.action) {
-    case "GET_ACTIVE_TAB_STATS":
-      preferenceFunction(request, _, sendResponse);
-      break;
-
     case "GET_MOTIVATIONAL_QUOTES_KEYS":
     case "GET_MOTIVATIONAL_QUOTES":
     case "UPDATE_PREFERENCES":
     case "GET_PREFERENCES":
     case "SAVE_PREFERENCES":
     case "GET_SAVED":
-      motivationFunction(request, _, sendResponse);
+      preferenceFunction(request, _, sendResponse);
       break;
   }
   return true; // Required for async response handling

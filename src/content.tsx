@@ -11,9 +11,6 @@ import {
   FaSync 
 } from 'react-icons/fa';
 
-// import styles from './AdWidget.module.css';
-// import { Quote, QuoteType } from './types';
-
 
 // Ad-related CSS selectors
 const AD_SELECTORS = [
@@ -129,30 +126,12 @@ export const App = React.memo(() => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   if (!quoteKey) return;
-  //   chrome.runtime.sendMessage({ action: "GET_MOTIVATIONAL_QUOTES", quoteKey }, (response) => {
-  //     if (response?.quote) {
-  //       setQuote(response.quote);
-  //       // setQuoteKey(respose.)
-  //     } else {
-  //       console.error(response?.error || "Failed to fetch quote.");
-  //     }
-  //   });
-  // }, [state.preferences.widgetType]);
 
   useEffect(() => {
     if (!quoteKey) return;
     chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
       if (request.action === "WIDGET_TYPE_CHANGE") {
         setQuoteKey(request.widgetType);
-        // setQuote(request.quote);
-
-        // Optionally fetch a new quote here if you want immediate update
-        if (request.widgetType !== quoteKey) {
-          // fetchQuote();
-
-        }
       }
     });
   
@@ -161,27 +140,6 @@ export const App = React.memo(() => {
       chrome.runtime.onMessage.removeListener((_request, _sender, _sendResponse) => {});
     };
   }, []);
-  // Add this useEffect to watch for state changes from background script
-  // useEffect(() => {
-  //   if (!quoteKey) return;
-  //   chrome.storage.onChanged.addListener((changes) => {
-  //     if (changes.preferences?.newValue) {
-  //       const newWidgetType = changes.preferences.newValue.widgetType;
-  //       if (newWidgetType && newWidgetType !== quoteKey) {
-  //         // setQuoteKey(newWidgetType);
-  //       }
-  //     }
-  //   });
-
-  //   return () => {
-  //     chrome.storage.onChanged.removeListener((_changes) => {});
-  //   };
-  // }, [quoteKey]);
-
-  // useEffect(() => {
-  //   setQuoteKey(state.preferences.widgetType);
-  // }, [state.preferences.widgetType])
-  
 
   const fetchQuote = () => {
     chrome.runtime.sendMessage(
@@ -194,12 +152,10 @@ export const App = React.memo(() => {
     );
   };
 
-
   useEffect(() => {
    if (!quoteKey) return;
    fetchQuote();
   }, [quoteKey]);
-
 
   const refreshQuote = () => {
     setIsAnimating(true);
@@ -239,55 +195,6 @@ export const App = React.memo(() => {
     }
   }, [isTabVisible]);
 
-//   // const selectWidget = () => {
-//   //   if (quoteKey === "Gratitude"){
-//   //     return (
-//   //       <div className={styles["blockquote-wrapper"]}>
-//   //         <div className={styles["blockquote"]}>
-//   //           <div className={styles["quote-box"]}>
-//   //             <p id="quote-text">{quote}</p>
-//   //             <h4 id="quote-author"></h4>
-//   //           </div>
-//   //         </div>
-//   //       </div>
-//   //     );
-//   //   } else if (quoteKey === "Personal Life"){
-//   //     return (
-//   //       <div className={styles["blockquote-wrapper"]}>
-//   //         <div className={styles["blockquote"]}>
-//   //           <div className={styles["quote-box"]}>
-//   //             <p id="quote-text">{quote}</p>
-//   //             <h4 id="quote-author"></h4>
-//   //           </div>
-//   //         </div>
-//   //       </div>
-//   //     );
-//   //   } else if (quoteKey === "Success"){
-//   //     return (
-//   //       <div className={styles["blockquote-wrapper"]}>
-//   //         <div className={styles["blockquote"]}>
-//   //           <div className={styles["quote-box"]}>
-//   //             <p id="quote-text">{quote}</p>
-//   //             <h4 id="quote-author"></h4>
-//   //           </div>
-//   //         </div>
-//   //       </div>
-//   //     );
-//   //   } else {
-//   //     return (
-//   //       <div className={styles["blockquote-wrapper"]}>
-//   //         <div className={styles["blockquote"]}>
-//   //           <div className={styles["quote-box"]}>
-//   //             <p id="quote-text">{quote}</p>
-//   //             <h4 id="quote-author"></h4>
-//   //           </div>
-//   //         </div>
-//   //       </div>
-//   //     );
-//   //   }
-//   // };
-
-//   return selectWidget();
 
   const getWidgetConfig = (type: string) => {
     const configs: any = {
