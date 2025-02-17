@@ -91,6 +91,7 @@ const Home = () => {
       {/* Widget Selection */}
       <div className={styles.section}>
         <h2>Choose Widget:</h2>
+        <div className={styles.widgetTypesContainer}>
         {widgetTypes.length > 0 ? (
           widgetTypes.map((type) => (
             <label key={type} className={styles.radioLabel}>
@@ -107,6 +108,8 @@ const Home = () => {
         ) : (
           <p>No quotes available.</p>
         )}
+
+        </div>
       </div>
 
       {/* Show Reminder Manager when reminder type is selected */}

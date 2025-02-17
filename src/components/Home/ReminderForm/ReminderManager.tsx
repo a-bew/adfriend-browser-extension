@@ -55,7 +55,7 @@ const ReminderManager: React.FC<ReminderManagerProps> = ({
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ReminderForm 
           onSubmit={onAddReminder} 
-          onClose={() => setIsModalOpen(false)} 
+          onClose={setIsModalOpen} 
         />
       </Modal>
     </div>

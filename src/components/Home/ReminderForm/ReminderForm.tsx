@@ -4,7 +4,7 @@ import styles from './ReminderForm.module.scss';
 
 interface ReminderFormProps {
   onSubmit: (reminder: Reminder) => void;
-  onClose: () => void;
+  onClose: (i:boolean) => void;
 }
 
 const ReminderForm: React.FC<ReminderFormProps> = ({ onSubmit, onClose }) => {
@@ -18,7 +18,7 @@ const ReminderForm: React.FC<ReminderFormProps> = ({ onSubmit, onClose }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(reminder);
-    onClose();
+    onClose(false);
   };
 
   return (
