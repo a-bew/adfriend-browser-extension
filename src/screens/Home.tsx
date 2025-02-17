@@ -62,7 +62,8 @@ const Home = () => {
         setReminders(response.preferences.reminders || []);
       }
       if (response?.quoteKeys) {
-        setWidgetTypeTypes([...response.quoteKeys, "reminder"]);
+        const hasReminder = response.quoteKeys.includes("reminder");
+        setWidgetTypeTypes(hasReminder?[...response.quoteKeys]:[...response.quoteKeys, "reminder"]);
       }
     });
 

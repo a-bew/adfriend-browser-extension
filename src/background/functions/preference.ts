@@ -13,6 +13,11 @@ export const preferenceFunction = async (request: any, _: any, sendResponse: any
                     sendResponse({ quoteKeys: ["success"] }); // Default category
                 }
                 break;
+            
+            case "GET_RANDOM_REMINDER":
+                const randomReminder = state.preferences.reminders[Math.floor(Math.random() * state.preferences.reminders.length)];
+                sendResponse({ reminder: randomReminder.text || "No reminders set." });
+                break;
 
             case "GET_MOTIVATIONAL_QUOTES":
                 console.log("Fetching motivational quote for key:", request.quoteKey);
@@ -32,10 +37,12 @@ export const preferenceFunction = async (request: any, _: any, sendResponse: any
                     } else {
 
                         console.warn("No stored motivational quotes found. Using default quotes.");
+
                         const defaultQuotes = [
                             "Believe you can and you're halfway there. - Theodore Roosevelt",
                             "You are capable of amazing things!",
                         ];
+                        
                         sendResponse({ quote: defaultQuotes[Math.floor(Math.random() * defaultQuotes.length)] });
                         
                     }

@@ -126,7 +126,6 @@ export const App = React.memo(() => {
     });
   }, []);
 
-
   useEffect(() => {
     if (!quoteKey) return;
     chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
@@ -142,6 +141,18 @@ export const App = React.memo(() => {
   }, []);
 
   const fetchQuote = () => {
+    if (!quoteKey) return;
+    if (quoteKey === 'reminder') {
+        chrome.runtime.sendMessage(
+          { action: "GET_RANDOM_REMINDER" },
+          (response: { reminder?: string; error?: string }) => {
+            if (response?.reminder) {
+              setQuote(response.reminder);
+            }
+          }
+        );  
+    } else {
+
     chrome.runtime.sendMessage(
       { action: "GET_MOTIVATIONAL_QUOTES", quoteKey: quoteKey },
       (response: { quote?: string; error?: string }) => {
@@ -150,6 +161,8 @@ export const App = React.memo(() => {
         }
       }
     );
+  }    
+
   };
 
   useEffect(() => {

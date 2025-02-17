@@ -1,6 +1,6 @@
 import { defaultPreferences, state } from "@/store/state";
 import { loadQuotes } from "./utils";
-import { preferenceFunction } from "./functions/motivation";
+import { preferenceFunction } from "./functions/preference";
 import { EncryptedData, secureIndexedDBStorage } from "@/db/SecureIndexDb";
 
 
@@ -77,9 +77,11 @@ chrome.runtime.onInstalled.addListener(async () => {
     if (storedState.state) {
       Object.assign(state, storedState.state);
     }
+
   } catch (error) {
     console.error("Error loading state or quotes:", error);
   }
+  
 });
 
 // Listen for messages
