@@ -17,7 +17,7 @@ export const preferenceFunction = async (request: any, _: any, sendResponse: any
             case "GET_RANDOM_REMINDER":
                 const randomReminder = state.preferences.reminders[Math.floor(Math.random() * state.preferences.reminders.length)];
                 console.log("Sending random reminder:", randomReminder);
-                sendResponse({ reminder: randomReminder.text || "No reminders set." });
+                sendResponse({ reminder: randomReminder?.text || "No reminders set." });
                 break;
 
             case "GET_MOTIVATIONAL_QUOTES":
