@@ -37,18 +37,39 @@ const Home = () => {
     );
   };
 
-  const handleAddReminder = (newReminder: Reminder) => {
-    const updatedReminders = [...reminders, newReminder];
-    setReminders(updatedReminders);
+  const handleSave = ()=>{
+    
+  }
+
+  const handleAddReminder = (_newReminder: Reminder) => {
+    const updatedReminders = reminders.length > 0 ? [...reminders, _newReminder] : [_newReminder];
     // Optionally auto-save when a reminder is added
-    handleSavePreference();
+    // handleSave();
+
+    chrome.runtime.sendMessage(
+      {
+        action: "UPDATE_PREFERENCES",
+        enableQuotes,
+        theme,
+        widgetType,
+        refreshInterval,
+        reminders: updatedReminders, // Save all reminders
+      },
+      (response) => {
+        if (response && response.success) {
+          setReminders(updatedReminders);
+        }
+      })
   };
 
   const handleDeleteReminder = (reminderId: number) => {
     const updatedReminders = reminders.filter(reminder => reminder.id !== reminderId);
     setReminders(updatedReminders);
     // Optionally auto-save when a reminder is deleted
-    handleSavePreference();
+    setTimeout(() => {
+      handleSave();
+
+    }, 1000);
   };
 
   // Load preferences from storage

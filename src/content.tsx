@@ -142,25 +142,31 @@ export const App = React.memo(() => {
 
   const fetchQuote = () => {
     if (!quoteKey) return;
-    if (quoteKey === 'reminder') {
-        chrome.runtime.sendMessage(
-          { action: "GET_RANDOM_REMINDER" },
-          (response: { reminder?: string; error?: string }) => {
-            if (response?.reminder) {
-              setQuote(response.reminder);
+      const titleCase = capitalizeFirstLetters(quoteKey)
+      
+      switch(titleCase){
+        case 'Gratitude':
+        case 'Success':
+        case 'Personal Life':
+          chrome.runtime.sendMessage(
+            { action: "GET_MOTIVATIONAL_QUOTES", quoteKey: quoteKey },
+            (response: { quote?: string; error?: string }) => {
+              if (response?.quote) {
+                setQuote(response.quote);
+              }
             }
-          }
-        );  
-    } else {
-
-    chrome.runtime.sendMessage(
-      { action: "GET_MOTIVATIONAL_QUOTES", quoteKey: quoteKey },
-      (response: { quote?: string; error?: string }) => {
-        if (response?.quote) {
-          setQuote(response.quote);
-        }
-      }
-    );
+          );
+          break;
+        default:
+          chrome.runtime.sendMessage(
+            { action: "GET_RANDOM_REMINDER", quoteKey: quoteKey },
+            (response: { reminder?: string; error?: string }) => {
+              if (response?.reminder) {
+                setQuote(response.reminder);
+              }
+            }
+          );  
+          break;
   }    
 
   };
@@ -172,7 +178,7 @@ export const App = React.memo(() => {
 
   const refreshQuote = () => {
     setIsAnimating(true);
-    fetchQuote();
+     fetchQuote();
     setTimeout(() => setIsAnimating(false), 500);
   };
 

@@ -20,9 +20,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   return (
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.modalContent}>
-        <button onClick={onClose} className={styles.closeButton}>
+        <span onClick={onClose} className={styles.closeButton}>
           <IoClose size={20} />
-        </button>
+        </span>
         <div>
         {children}
 

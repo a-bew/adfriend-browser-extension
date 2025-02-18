@@ -17,8 +17,9 @@ const ReminderForm: React.FC<ReminderFormProps> = ({ onSubmit, onClose }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     onSubmit(reminder);
-    onClose(false);
+    onClose(false);    
   };
 
   return (

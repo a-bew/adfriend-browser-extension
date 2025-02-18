@@ -6,8 +6,7 @@ import { EncryptedData, secureIndexedDBStorage } from "@/db/SecureIndexDb";
 
 // Function to encrypt preferences before storage
 export const encryptPreferences = async (preferences: any): Promise<EncryptedData> => {
-  const dataString = JSON.stringify(preferences);
-  const encrypted = await secureIndexedDBStorage.additionalEncryption(dataString);
+  const encrypted = await secureIndexedDBStorage.additionalEncryption(preferences);
   return {
     encrypted,
     iv: '', // Fill in if using AES or similar encryption
@@ -18,9 +17,9 @@ export const encryptPreferences = async (preferences: any): Promise<EncryptedDat
 
 
 // Function to decrypt preferences after retrieval
-export const decryptPreferences = (encryptedData: EncryptedData): any => {
+export const decryptPreferences = async (encryptedData: EncryptedData): Promise<any> => {
   try {
-    return secureIndexedDBStorage.decryptStoredData(encryptedData.encrypted, );
+    return await secureIndexedDBStorage.decryptStoredData(encryptedData.encrypted, );
   } catch (error) {
     console.error('Failed to decrypt preferences:', error);
     return null;
@@ -31,8 +30,9 @@ export const decryptPreferences = (encryptedData: EncryptedData): any => {
 const initializeState = async () => {
   try {
     const encryptedPrefs = await secureIndexedDBStorage.retrieveData('preferences');
-    const storedPrefs = JSON.parse(await decryptPreferences(encryptedPrefs));
+    const storedPrefs = await decryptPreferences(encryptedPrefs);
     console.log("storedPrefs", Object.keys(storedPrefs),  Object.values(storedPrefs))
+  
     if (storedPrefs) {
       Object.assign(state.preferences, storedPrefs);
     } else {
@@ -40,14 +40,17 @@ const initializeState = async () => {
       const encryptedDefaultPrefs = encryptPreferences(defaultPreferences);
       await secureIndexedDBStorage.storeData('preferences', await encryptedDefaultPrefs);
     }
+  
   } catch (error) {
     console.error('Failed to initialize state from DB:', error);
     // Use default preferences if retrieval fails
     Object.assign(state.preferences, defaultPreferences);
     const encryptedDefaultPrefs = await encryptPreferences(defaultPreferences);
     await secureIndexedDBStorage.storeData('preferences', encryptedDefaultPrefs);
+  
   }
 };
+
 // Triggered when the extension is installed
 chrome.runtime.onInstalled.addListener(async () => {
   console.log("AdFriend installed!");
@@ -62,6 +65,7 @@ chrome.runtime.onInstalled.addListener(async () => {
     const quotes = await loadQuotes(); // Ensure quotes are loaded properly
 
     if (quotes) {
+
       state.quotes = quotes;
       state.quoteKeys = Object.keys(quotes);
 
@@ -89,6 +93,7 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
   switch (request.action) {
     case "GET_MOTIVATIONAL_QUOTES_KEYS":
     case "GET_MOTIVATIONAL_QUOTES":
+    case "GET_RANDOM_REMINDER":
     case "UPDATE_PREFERENCES":
     case "GET_PREFERENCES":
     case "SAVE_PREFERENCES":

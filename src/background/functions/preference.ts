@@ -16,12 +16,13 @@ export const preferenceFunction = async (request: any, _: any, sendResponse: any
             
             case "GET_RANDOM_REMINDER":
                 const randomReminder = state.preferences.reminders[Math.floor(Math.random() * state.preferences.reminders.length)];
+                console.log("Sending random reminder:", randomReminder);
                 sendResponse({ reminder: randomReminder.text || "No reminders set." });
                 break;
 
             case "GET_MOTIVATIONAL_QUOTES":
                 console.log("Fetching motivational quote for key:", request.quoteKey);
-
+                
                 chrome.storage.local.get(["quotes"], (result) => {
 
                     if (result.quotes && request.quoteKey?.toLowerCase() in result.quotes) {
@@ -60,7 +61,7 @@ export const preferenceFunction = async (request: any, _: any, sendResponse: any
                             refreshInterval: request.refreshInterval,
                             reminders: request.reminders
                         }); // Use a secure method for password in production
-                
+                        
                         await secureIndexedDBStorage.storeData('preferences', encryptedData);
                         
                         // Update state in memory
@@ -71,6 +72,7 @@ export const preferenceFunction = async (request: any, _: any, sendResponse: any
                             theme: request.theme,
                             widgetType: request.widgetType,
                             refreshInterval: request.refreshInterval,
+                            reminders: request.reminders
                         };
                 
                         // Update chrome.storage.local for immediate access by other parts of the extension
@@ -117,12 +119,12 @@ export const preferenceFunction = async (request: any, _: any, sendResponse: any
                 try {
                     const encryptedPrefs = await secureIndexedDBStorage.retrieveData('preferences');
                     const preferences = await decryptPreferences(encryptedPrefs); // Secure password management needed
+                    console.log("preferences db", preferences);
 
                 chrome.storage.local.get(["quoteKeys", "preferences"], (result) => {
-                    console.log("preferences db", preferences, result.quoteKeys || []);
 
                     sendResponse({
-                        preferences: result.preferences || state.preferences,
+                        preferences: preferences || state.preferences,
                         quoteKeys: result.quoteKeys || [],
                     });
                 });

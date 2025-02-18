@@ -19,10 +19,8 @@ const ReminderList: React.FC<ReminderListProps> = ({ reminders, onDelete }) => {
         <div key={reminder.id} className={styles.item}>
           <div className={styles.content}>
             <IoTimeOutline className={styles.icon} />
-            <div>
               <p>{reminder.text}</p>
               <span>{reminder.time} • {reminder.frequency}</span>
-            </div>
           </div>
           <button onClick={() => onDelete(reminder.id)} className={styles.deleteButton}>
             <IoTrashOutline />

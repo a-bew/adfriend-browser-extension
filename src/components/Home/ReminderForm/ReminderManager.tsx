@@ -26,7 +26,7 @@ const ReminderManager: React.FC<ReminderManagerProps> = ({
   const [isModalOpenReminderList, setIsModalOpenReminderList] = useState(false);
 
   return (
-    <div >
+    <>
       <div className={styles.section}>
         <h2>Reminders</h2>
 
@@ -58,7 +58,7 @@ const ReminderManager: React.FC<ReminderManagerProps> = ({
           onClose={setIsModalOpen} 
         />
       </Modal>
-    </div>
+    </>
   );
 };
 
